@@ -6,9 +6,11 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService extends ChangeNotifier {
   final String _model = 'gemini-1.5-flash'; // Define the Gemini model version
-  static const String _apiKey = "AIzaSyC0rWE2B2NlhqrQRRTkQBZPRdQBKrnLgLg"; // Your API key
+  static const String _apiKey =
+      "AIzaSyC0rWE2B2NlhqrQRRTkQBZPRdQBKrnLgLg"; // Your API key
 
-  Future<Map<String, dynamic>> fetchDiseaseDetails(String diseaseName, DateTime? timestamp, String? location) async {
+  Future<Map<String, dynamic>> fetchDiseaseDetails(
+      String diseaseName, DateTime? timestamp, String? location) async {
     if (_apiKey.isEmpty) {
       return {'error': 'API Key is missing'};
     }
@@ -33,13 +35,26 @@ class GeminiService extends ChangeNotifier {
 
       // Define the prompt for generating disease details
       final prompt = '''
-      Provide short content for the following details for the disease: "$diseaseName":
-      1. A schedule of activities to cure or manage the disease.
-      2. The next recommended diagnosis date for follow-up.
-      Include region and seasonal recommendations based on the given location and time.
-      $locationInfo
+Please provide a comprehensive yet concise medical management plan for ${diseaseName.toUpperCase()} with the following specific details:
+
+TREATMENT SCHEDULE:
+- Provide a clear daily/weekly schedule for managing the condition
+- Include medication timings if applicable
+- List specific lifestyle modifications required
+- Mention any dietary restrictions or recommendations
+
+MONITORING PLAN:
+- Key symptoms to track
+- Vital signs to monitor
+- Warning signs that require immediate medical attention
+
+FOLLOW-UP CARE:
+- Recommended frequency of check-ups
+- Types of tests or examinations needed
+- Specialists to consult if necessary$locationInfo
       $timeInfo
-      Use plain text, simple and easy-to-understand language.
+      Use plain text, simple and easy-to-understand language, and avoid unnecessary symbols. 
+      Keep the response in paragraph format.
       ''';
 
       // Make the API request to generate content
@@ -48,8 +63,11 @@ class GeminiService extends ChangeNotifier {
       // Extract and parse the generated content
       final content = response.text ?? 'No content generated';
 
+      final cleanContent = content.replaceAll('**', '');
+      final cleanContent1 = cleanContent.replaceAll('*', '');
+      final cleanContent2 = cleanContent1.replaceAll('-', '');
       // Parse content into structured data (custom parsing logic based on response format)
-      final Map<String, dynamic> result = _parseResponse(content);
+      final Map<String, dynamic> result = _parseResponse(cleanContent2);
 
       return result;
     } catch (e) {
@@ -68,7 +86,8 @@ class GeminiService extends ChangeNotifier {
         : [];
     int randomDays = 7 + Random().nextInt(11) - 5;
     final nextAppointment = lines.isNotEmpty
-        ? DateTime.now().add(Duration(days: randomDays)) // Mocking a follow-up date
+        ? DateTime.now()
+            .add(Duration(days: randomDays)) // Mocking a follow-up date
         : DateTime.now();
 
     return {
@@ -78,4 +97,3 @@ class GeminiService extends ChangeNotifier {
     };
   }
 }
-
