@@ -18,117 +18,115 @@ class AppointmentPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(223, 240, 227, 1),
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(223, 240, 227, 1),
-        title: Text('My Appointments', style: TextStyle(color: Colors.green)),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('appointments')
-            .where('userId', isEqualTo: user.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No appointments found'));
-          }
-
-          return ListView.builder(
-            padding: EdgeInsets.all(16),
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              final doc = snapshot.data!.docs[index];
-              final data = doc.data() as Map<String, dynamic>;
-              final appointments = List<Map<String, dynamic>>.from(data['appointments'] ?? []);
-
-              if (appointments.isEmpty) return SizedBox.shrink();
-
-              // Sort appointments by timestamp
-              appointments.sort((a, b) => (a['timestamp'] as Timestamp)
-                  .compareTo(b['timestamp'] as Timestamp));
-
-              // Get the first (oldest) and latest appointment dates
-              final firstAppointmentTimestamp = appointments.first['timestamp'] as Timestamp;
-              final latestAppointmentDate = appointments.last['appointmentDate'] as Timestamp;
-
-              // Calculate days since first appointment
-              final daysSinceFirst = DateTime.now()
-                  .difference(firstAppointmentTimestamp.toDate())
-                  .inDays;
-
-              return Card(
-                elevation: 4,
-                margin: EdgeInsets.only(bottom: 16),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: Icon(
-                      Icons.spa,
-                      color: Colors.white,
+      body: SafeArea(
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('appointments')
+              .where('userId', isEqualTo: user.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+        
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+        
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(child: Text('No appointments found'));
+            }
+        
+            return ListView.builder(
+              padding: EdgeInsets.all(16),
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                final doc = snapshot.data!.docs[index];
+                final data = doc.data() as Map<String, dynamic>;
+                final appointments = List<Map<String, dynamic>>.from(data['appointments'] ?? []);
+        
+                if (appointments.isEmpty) return SizedBox.shrink();
+        
+                // Sort appointments by timestamp
+                appointments.sort((a, b) => (a['timestamp'] as Timestamp)
+                    .compareTo(b['timestamp'] as Timestamp));
+        
+                // Get the first (oldest) and latest appointment dates
+                final firstAppointmentTimestamp = appointments.first['timestamp'] as Timestamp;
+                final latestAppointmentDate = appointments.last['appointmentDate'] as Timestamp;
+        
+                // Calculate days since first appointment
+                final daysSinceFirst = DateTime.now()
+                    .difference(firstAppointmentTimestamp.toDate())
+                    .inDays;
+        
+                return Card(
+                  elevation: 4,
+                  margin: EdgeInsets.only(bottom: 16),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.green,
+                      child: Icon(
+                        Icons.spa,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  title: Text(
-                    data['crop'] ?? 'Unknown Crop',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.green,
+                    title: Text(
+                      data['crop'] ?? 'Unknown Crop',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.green,
+                      ),
                     ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 4),
-                      Text(
-                        'Started ${daysSinceFirst} days ago',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      Text(
-                        'Next appointment: ${DateFormat('MMM dd, yyyy').format(latestAppointmentDate.toDate())}',
-                        style: TextStyle(color: Colors.green),
-                      ),
-                      Text(
-                        'Total appointments: ${appointments.length}',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        '$daysSinceFirst days',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 4),
+                        Text(
+                          'Started ${daysSinceFirst} days ago',
+                          style: TextStyle(color: Colors.grey[600]),
                         ),
-                      ),
-                      Text(
-                        'monitoring',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
+                        Text(
+                          'Next appointment: ${DateFormat('MMM dd, yyyy').format(latestAppointmentDate.toDate())}',
+                          style: TextStyle(color: Colors.green),
                         ),
-                      ),
-                    ],
+                        Text(
+                          'Total appointments: ${appointments.length}',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '$daysSinceFirst days',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Text(
+                          'monitoring',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Show detailed view of appointments
+                      _showAppointmentDetails(context, data['crop'], appointments);
+                    },
                   ),
-                  onTap: () {
-                    // Show detailed view of appointments
-                    _showAppointmentDetails(context, data['crop'], appointments);
-                  },
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

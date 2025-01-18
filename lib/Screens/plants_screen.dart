@@ -200,28 +200,6 @@ class _Plant_ScreenState extends State<Plant_Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(223, 240, 227, 1),
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(223, 240, 227, 1),
-        title: const Center(
-          child: Text(
-            'Plant Disease Detection',
-            style: TextStyle(
-                fontFamily: 'SourceSans3',
-                fontSize: 25,
-                letterSpacing: 1.2,
-                fontWeight: FontWeight.bold,
-                color: Colors.green),
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.green),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            );
-          },
-        ),
-      ),
       body: Stack(
         children: [
           if (_isCameraMode && _controller != null && _controller!.value.isInitialized)

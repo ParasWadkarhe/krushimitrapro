@@ -31,16 +31,16 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Agriculture News'),
-        backgroundColor: const Color.fromRGBO(223, 240, 227, 1),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () => showFilterDialog(context),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   //title: Text('Agriculture News'),
+      //   //backgroundColor: const Color.fromRGBO(223, 240, 227, 1),
+      //   // actions: [
+      //   //   // IconButton(
+      //   //   //   icon: Icon(Icons.filter_list),
+      //   //   //   onPressed: () => showFilterDialog(context),
+      //   //   // ),
+      //   // ],
+      // ),
       body: Container(
         color: Color.fromRGBO(223, 240, 227, 1),
         child: FutureBuilder<List<NewsArticle>>(
@@ -124,7 +124,6 @@ class _NewsPageState extends State<NewsPage> {
     );
   }
 }
-
 class NewsCard extends StatelessWidget {
   final NewsArticle article;
 
@@ -133,41 +132,57 @@ class NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0), // Increased margin
+      shape: RoundedRectangleBorder(                                  // Added rounded borders
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (article.imageUrl != null)
-            Image.network(
-              article.imageUrl!,
-              fit: BoxFit.cover,
+            ClipRRect(                                                // Added ClipRRect to round image corners
+              borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+              child: Image.network(
+                article.imageUrl!,
+                fit: BoxFit.cover,
+              ),
             ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(12.0, 13.0, 12.0, 8.0),  // Increased padding
             child: Text(
               article.title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.green,
+                color: Colors.black,                                     // Changed to black
+                fontSize: 18.0,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0.0),  // Increased padding
             child: Text(
               article.description,
-              style: TextStyle(color: Colors.green),
+              style: TextStyle(
+                color: Colors.black87,                                   // Changed to black with slight transparency
+                fontSize: 14.0,
+              ),
             ),
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                // Open article URL using a package like url_launcher
-              },
-              child: Text(
-                'Read more',
-                style: TextStyle(color: Colors.green),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8.0, 8.0, 16.0),     // Added bottom padding
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                onPressed: () {
+                  // Open article URL using a package like url_launcher
+                },
+                child: Text(
+                  'Read more',
+                  style: TextStyle(
+                    color: Colors.green,                                // Kept green for the action button
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),

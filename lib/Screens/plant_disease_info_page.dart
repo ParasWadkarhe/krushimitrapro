@@ -3,22 +3,51 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Services/gemini_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'home_page.dart';
+
 class DiseaseInfoPage extends StatefulWidget {
   final int diseaseIndex;
   final String? location_;
   final DateTime? timestamp;
   static const List<String> diseaseNames = [
-    'Tomato Late Blight', 'Tomato healthy', 'Grape healthy', 'Orange Haunglongbing (Citrus greening)',
-    'Soybean healthy', 'Squash Powdery mildew', 'Potato healthy', 'Corn (maize) Northern Leaf Blight',
-    'Tomato Early blight', 'Tomato Septoria leaf spot', 'Corn (maize) Cercospora leaf spot Gray leaf spot',
-    'Strawberry Leaf scorch', 'Peach healthy', 'Apple Apple scab', 'Tomato Tomato Yellow Leaf Curl Virus',
-    'Tomato Bacterial spot', 'Apple Black rot', 'Blueberry healthy', 'Cherry (including sour) Powdery mildew',
-    'Peach Bacterial spot', 'Apple Cedar apple rust', 'Tomato Target Spot', 'Pepper bell healthy',
-    'Grape Leaf blight (Isariopsis Leaf Spot)', 'Potato Late blight', 'Tomato Tomato mosaic virus',
-    'Strawberry healthy', 'Apple healthy', 'Grape Black rot', 'Potato Early blight',
-    'Cherry (including sour) healthy', 'Corn (maize) Common rust', 'Grape Esca (Black Measles)',
-    'Raspberry healthy', 'Tomato Leaf Mold', 'Tomato Spider mites Two-spotted spider mite',
-    'Pepper bell Bacterial spot', 'Corn (maize) healthy'
+    'Tomato Late Blight',
+    'Tomato healthy',
+    'Grape healthy',
+    'Orange Haunglongbing (Citrus greening)',
+    'Soybean healthy',
+    'Squash Powdery mildew',
+    'Potato healthy',
+    'Corn (maize) Northern Leaf Blight',
+    'Tomato Early blight',
+    'Tomato Septoria leaf spot',
+    'Corn (maize) Cercospora leaf spot Gray leaf spot',
+    'Strawberry Leaf scorch',
+    'Peach healthy',
+    'Apple Apple scab',
+    'Tomato Tomato Yellow Leaf Curl Virus',
+    'Tomato Bacterial spot',
+    'Apple Black rot',
+    'Blueberry healthy',
+    'Cherry (including sour) Powdery mildew',
+    'Peach Bacterial spot',
+    'Apple Cedar apple rust',
+    'Tomato Target Spot',
+    'Pepper bell healthy',
+    'Grape Leaf blight (Isariopsis Leaf Spot)',
+    'Potato Late blight',
+    'Tomato Tomato mosaic virus',
+    'Strawberry healthy',
+    'Apple healthy',
+    'Grape Black rot',
+    'Potato Early blight',
+    'Cherry (including sour) healthy',
+    'Corn (maize) Common rust',
+    'Grape Esca (Black Measles)',
+    'Raspberry healthy',
+    'Tomato Leaf Mold',
+    'Tomato Spider mites Two-spotted spider mite',
+    'Pepper bell Bacterial spot',
+    'Corn (maize) healthy'
   ];
 
   DiseaseInfoPage({
@@ -35,15 +64,16 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
   final TextEditingController _diseaseNameController = TextEditingController();
   final TextEditingController _cropNameController = TextEditingController();
   final GeminiService _geminiService = GeminiService();
-  DateTime? _selectedDate;
 
   String _summary = '';
   List<String> _schedule = [];
   DateTime? _nextAppointment;
 
-  Future<void> _fetchGeminiDetails(String diseaseName, DateTime? timestamp, String? location) async {
+  Future<void> _fetchGeminiDetails(
+      String diseaseName, DateTime? timestamp, String? location) async {
     try {
-      final result = await _geminiService.fetchDiseaseDetails(diseaseName, timestamp, location);
+      final result = await _geminiService.fetchDiseaseDetails(
+          diseaseName, timestamp, location);
       setState(() {
         _summary = result['summary'] as String;
         _schedule = List<String>.from(result['schedule']);
@@ -58,24 +88,10 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
-    );
-    if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
   // ... previous imports and code remains the same until _saveAppointment function ...
 
   Future<void> _saveAppointment() async {
-    if (_cropNameController.text.isEmpty ) {
+    if (_cropNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),
       );
@@ -92,25 +108,27 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
       }
 
       final crop = _cropNameController.text;
-      final docId = '${user.uid}_${crop.toLowerCase()}'; // Create unique ID for farmer-crop combination
+      final docId =
+          '${user.uid}_${crop.toLowerCase()}'; // Create unique ID for farmer-crop combination
 
       final appointmentData = {
         'timestamp': Timestamp.now(),
         'diseaseName': _diseaseNameController.text,
         'cropName': crop,
         'appointmentDate': _nextAppointment,
-        'userId': user.uid,  // Store user ID for reference
+        'userId': user.uid, // Store user ID for reference
       };
 
       final docRef = FirebaseFirestore.instance
           .collection('appointments')
-          .doc(docId);  // Using combined ID for document
+          .doc(docId); // Using combined ID for document
 
       final doc = await docRef.get();
 
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
-        final appointments = List<Map<String, dynamic>>.from(data['appointments'] ?? []);
+        final appointments =
+            List<Map<String, dynamic>>.from(data['appointments'] ?? []);
         appointments.add(appointmentData);
 
         await docRef.update({
@@ -130,11 +148,11 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Appointment saved successfully')),
       );
-
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
       _cropNameController.clear();
-      setState(() {
-        _selectedDate = null;
-      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error saving appointment: $e')),
@@ -147,8 +165,10 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
   @override
   void initState() {
     super.initState();
-    _diseaseNameController.text = DiseaseInfoPage.diseaseNames[widget.diseaseIndex];
-    _fetchGeminiDetails(_diseaseNameController.text, widget.timestamp, widget.location_);
+    _diseaseNameController.text =
+        DiseaseInfoPage.diseaseNames[widget.diseaseIndex];
+    _fetchGeminiDetails(
+        _diseaseNameController.text, widget.timestamp, widget.location_);
   }
 
   @override
@@ -161,7 +181,8 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
           icon: Icon(Icons.arrow_back, color: Colors.green),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Disease Information', style: TextStyle(color: Colors.green)),
+        title:
+            Text('Disease Information', style: TextStyle(color: Colors.green)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -179,7 +200,10 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                   children: <Widget>[
                     Text(
                       'Disease Name:',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
                     ),
                     SizedBox(height: 10),
                     TextField(
@@ -189,14 +213,19 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                         hintText: 'Enter disease name',
                       ),
                     ),
-                    if (_summary.isNotEmpty || _schedule.isNotEmpty || _nextAppointment != null)
+                    if (_summary.isNotEmpty ||
+                        _schedule.isNotEmpty ||
+                        _nextAppointment != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 20),
                           Text(
                             'Summary:',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),
                           ),
                           SizedBox(height: 10),
                           Text(
@@ -206,15 +235,23 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                           SizedBox(height: 20),
                           Text(
                             'Activity Schedule:',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),
                           ),
                           SizedBox(height: 10),
-                          ..._schedule.map((s) => Text('- $s', style: TextStyle(fontSize: 16, color: Colors.green))),
+                          ..._schedule.map((s) => Text('- $s',
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.green))),
                           SizedBox(height: 20),
                           if (_nextAppointment != null)
                             Text(
                               'Next Appointment: ${_nextAppointment!.toLocal().toString().split(' ')[0]}',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
                             ),
                         ],
                       ),
@@ -234,7 +271,10 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                   children: <Widget>[
                     Text(
                       'Schedule Appointment',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
                     ),
                     SizedBox(height: 10),
                     TextField(
@@ -278,9 +318,12 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                 }
 
                 var data = snapshot.data!.data() as Map<String, dynamic>;
-                List<String> symptoms = List<String>.from(data['symptoms'] ?? []);
-                List<String> precautions = List<String>.from(data['precautions'] ?? []);
-                List<String> treatment = List<String>.from(data['treatment'] ?? []);
+                List<String> symptoms =
+                    List<String>.from(data['symptoms'] ?? []);
+                List<String> precautions =
+                    List<String>.from(data['precautions'] ?? []);
+                List<String> treatment =
+                    List<String>.from(data['treatment'] ?? []);
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,7 +331,10 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                     SizedBox(height: 20),
                     Text(
                       'Disease: ${DiseaseInfoPage.diseaseNames[widget.diseaseIndex]}',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
                     ),
                     SizedBox(height: 20),
                     _buildInfoCard('Symptoms', symptoms),
@@ -336,10 +382,14 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
           children: <Widget>[
             Text(
               '$title:',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green),
             ),
             SizedBox(height: 10),
-            ...items.map((item) => Text('- $item', style: TextStyle(fontSize: 16, color: Colors.green))),
+            ...items.map((item) => Text('- $item',
+                style: TextStyle(fontSize: 16, color: Colors.green))),
           ],
         ),
       ),
