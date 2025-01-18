@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -37,8 +39,7 @@ class GeminiService extends ChangeNotifier {
       Include region and seasonal recommendations based on the given location and time.
       $locationInfo
       $timeInfo
-      Use plain text, simple and easy-to-understand language, and avoid unnecessary symbols. 
-      Keep the response in paragraph format.
+      Use plain text, simple and easy-to-understand language.
       ''';
 
       // Make the API request to generate content
@@ -65,8 +66,9 @@ class GeminiService extends ChangeNotifier {
     final schedule = lines.length > 1
         ? lines.sublist(1, lines.length - 1).map((e) => e.trim()).toList()
         : [];
+    int randomDays = 7 + Random().nextInt(11) - 5;
     final nextAppointment = lines.isNotEmpty
-        ? DateTime.now().add(Duration(days: 7)) // Mocking a follow-up date
+        ? DateTime.now().add(Duration(days: randomDays)) // Mocking a follow-up date
         : DateTime.now();
 
     return {

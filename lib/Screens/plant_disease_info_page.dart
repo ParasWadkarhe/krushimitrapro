@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Services/gemini_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DiseaseInfoPage extends StatefulWidget {
   final int diseaseIndex;
@@ -20,9 +21,11 @@ class DiseaseInfoPage extends StatefulWidget {
     'Pepper bell Bacterial spot', 'Corn (maize) healthy'
   ];
 
-  DiseaseInfoPage({required this.diseaseIndex,
+  DiseaseInfoPage({
+    required this.diseaseIndex,
     this.location_,
-    this.timestamp,});
+    this.timestamp,
+  });
 
   @override
   _DiseaseInfoPageState createState() => _DiseaseInfoPageState();
@@ -30,7 +33,9 @@ class DiseaseInfoPage extends StatefulWidget {
 
 class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
   final TextEditingController _diseaseNameController = TextEditingController();
+  final TextEditingController _cropNameController = TextEditingController();
   final GeminiService _geminiService = GeminiService();
+  DateTime? _selectedDate;
 
   String _summary = '';
   List<String> _schedule = [];
@@ -53,13 +58,98 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
     }
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  // ... previous imports and code remains the same until _saveAppointment function ...
+
+  Future<void> _saveAppointment() async {
+    if (_cropNameController.text.isEmpty ) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please login to save appointments')),
+        );
+        return;
+      }
+
+      final crop = _cropNameController.text;
+      final docId = '${user.uid}_${crop.toLowerCase()}'; // Create unique ID for farmer-crop combination
+
+      final appointmentData = {
+        'timestamp': Timestamp.now(),
+        'diseaseName': _diseaseNameController.text,
+        'cropName': crop,
+        'appointmentDate': _nextAppointment,
+        'userId': user.uid,  // Store user ID for reference
+      };
+
+      final docRef = FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(docId);  // Using combined ID for document
+
+      final doc = await docRef.get();
+
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        final appointments = List<Map<String, dynamic>>.from(data['appointments'] ?? []);
+        appointments.add(appointmentData);
+
+        await docRef.update({
+          'appointments': appointments,
+          'lastUpdated': Timestamp.now(),
+        });
+      } else {
+        await docRef.set({
+          'userId': user.uid,
+          'crop': crop,
+          'appointments': [appointmentData],
+          'createdAt': Timestamp.now(),
+          'lastUpdated': Timestamp.now(),
+        });
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Appointment saved successfully')),
+      );
+
+      _cropNameController.clear();
+      setState(() {
+        _selectedDate = null;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving appointment: $e')),
+      );
+    }
+  }
+
+// ... rest of the code remains the same ...
+
   @override
   void initState() {
     super.initState();
     _diseaseNameController.text = DiseaseInfoPage.diseaseNames[widget.diseaseIndex];
-    _fetchGeminiDetails(_diseaseNameController.text, widget.timestamp, widget.location_); // Pass timestamp and location
+    _fetchGeminiDetails(_diseaseNameController.text, widget.timestamp, widget.location_);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +218,43 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                             ),
                         ],
                       ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Appointment Section
+            Card(
+              elevation: 5,
+              margin: EdgeInsets.symmetric(vertical: 8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Schedule Appointment',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _cropNameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Crop Name',
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _saveAppointment,
+                      child: Text('Save Appointment'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                    ),
                   ],
                 ),
               ),

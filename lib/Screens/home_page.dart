@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'Appointment.dart';
+import 'Myth_Screen.dart';
 import 'news_page.dart';
 import 'plants_screen.dart';
 import '../Widgets/Crop_List.dart';
@@ -84,6 +86,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => NewsPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading:
+              Icon(Icons.access_alarm, color: Colors.green),
+              title: Text('Appointments', style: TextStyle(color: Colors.green)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AppointmentPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading:
+              Icon(Icons.abc_sharp, color: Colors.green),
+              title: Text('Myth-Or-Not', style: TextStyle(color: Colors.green)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MythPage()),
                 );
               },
             ),
