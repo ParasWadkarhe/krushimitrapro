@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:krushimitra/Screens/Welcome.dart';
 import 'Appointment.dart';
 import 'Myth_Screen.dart';
 import 'news_page.dart';
@@ -14,16 +16,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  final List<String> imgList = [
-    'assets/img1.jpeg',
-    'assets/img2.jpeg',
-    'assets/img3.jpeg',
-    'assets/img4.jpeg',
-  ];
+
 
   final _pageController = PageController(initialPage: 0);
   final NotchBottomBarController _controller =
-      NotchBottomBarController(index: 0);
+  NotchBottomBarController(index: 0);
 
   @override
   void dispose() {
@@ -33,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // Pages for bottom navigation bar
     final List<Widget> bottomBarPages = [
       HomePage(),
       CommodityListPage(),
@@ -43,14 +39,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ];
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       extendBody: false,
-      appBar: AppBar(
-      ),
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: bottomBarPages,
+      body: SafeArea(
+        child: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: bottomBarPages,
+        ),
       ),
       bottomNavigationBar: AnimatedNotchBottomBar(
         notchBottomBarController: _controller,
@@ -60,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         maxLine: 1,
         shadowElevation: 5,
         kBottomRadius: 28.0,
-        notchColor: const Color.fromRGBO(223, 240, 227, 1),
+        notchColor: const Color(0xff2a9134),
         removeMargins: false,
         bottomBarWidth: 500,
         showShadow: true,
@@ -69,32 +64,54 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         elevation: 1,
         bottomBarItems: const [
           BottomBarItem(
-            inActiveItem: Icon(Icons.home_outlined, color: Color(0xff2a9134)),
-            activeItem: Icon(Icons.home, color: Color(0xff137547)),
-            itemLabel: 'Home',
+            inActiveItem: FaIcon(
+              FontAwesomeIcons.house,
+              color: Color(0xff137547),
+            ),
+            activeItem: FaIcon(
+              FontAwesomeIcons.houseChimney,
+              color: Colors.white,
+            ),
           ),
           BottomBarItem(
-            inActiveItem:
-                Icon(Icons.monetization_on_outlined, color: Color(0xff2a9134)),
-            activeItem:
-                Icon(Icons.monetization_on_outlined, color: Color(0xff137547)),
-            itemLabel: 'Prices',
+            inActiveItem: FaIcon(
+              FontAwesomeIcons.moneyBill,
+              color: Color(0xff137547),
+            ),
+            activeItem: FaIcon(
+              FontAwesomeIcons.moneyBill,
+              color: Colors.white,
+            ),
           ),
           BottomBarItem(
-            inActiveItem: Icon(Icons.local_florist, color: Color(0xff2a9134)),
-            activeItem: Icon(Icons.local_florist, color: Color(0xff137547)),
-            itemLabel: 'Plants',
+            inActiveItem: FaIcon(
+              FontAwesomeIcons.leaf,
+              color: Color(0xff137547),
+            ),
+            activeItem: FaIcon(
+              FontAwesomeIcons.leaf,
+              color: Colors.white,
+            ),
           ),
           BottomBarItem(
-            inActiveItem:
-                Icon(Icons.article_outlined, color: Color(0xff2a9134)),
-            activeItem: Icon(Icons.article_outlined, color: Color(0xff137547)),
-            itemLabel: 'News',
+            inActiveItem: FaIcon(
+              FontAwesomeIcons.newspaper,
+              color: Color(0xff137547),
+            ),
+            activeItem: FaIcon(
+              FontAwesomeIcons.newspaper,
+              color: Colors.white,
+            ),
           ),
           BottomBarItem(
-            inActiveItem: Icon(Icons.access_alarm, color: Color(0xff2a9134)),
-            activeItem: Icon(Icons.access_alarm, color: Color(0xff137547)),
-            itemLabel: 'Schedule',
+            inActiveItem: FaIcon(
+              FontAwesomeIcons.clock,
+              color: Color(0xff137547),
+            ),
+            activeItem: FaIcon(
+              FontAwesomeIcons.clock,
+              color: Colors.white,
+            ),
           ),
         ],
         onTap: (index) {
@@ -106,22 +123,66 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 }
 
-// Home page content
 class HomePage extends StatelessWidget {
+  final List<String> services = [
+    'Plant Care Guidance',
+    'Crop Price Monitoring',
+    'Market Price Forecasting',
+    'News Letters',
+    'Local Statistics',
+    'Disease Prediction',
+  ];
+  final List<String> imgList = [
+    'assets/2.png',
+    'assets/3.png',
+    'assets/4.png',
+    'assets/5.png',
+  ];
+  final List<IconData> serviceIcons = [
+    FontAwesomeIcons.seedling,
+    FontAwesomeIcons.moneyBillTrendUp,
+    FontAwesomeIcons.chartLine,
+    FontAwesomeIcons.envelopeOpenText,
+    FontAwesomeIcons.chartArea,
+    FontAwesomeIcons.virus,
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final services = [
-      'Plant Care Guidance',
-      'Crop Price Monitoring',
-      'Market Price Forecasting',
-      'News Letters',
-      'Local Statistics',
-      'Disease Pridiction'
-    ];
-
     return SingleChildScrollView(
       child: Column(
         children: [
+          // Header Row
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    SizedBox(height: 40),
+                    Text("Hi,", style: TextStyle(fontSize: 50)),
+                    Text("Farmer", style: TextStyle(fontSize: 50)),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                    );
+                  },
+                  icon: const Icon(FontAwesomeIcons.signOut),
+                  iconSize: 40,
+                ),
+              ),
+            ],
+          ),
+
           // Slideshow Carousel
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -131,73 +192,45 @@ class HomePage extends StatelessWidget {
                 autoPlay: true,
                 enlargeCenterPage: true,
                 aspectRatio: 16 / 9,
-                autoPlayInterval: Duration(seconds: 3),
+                autoPlayInterval: const Duration(seconds: 3),
               ),
-              items: [
-                'assets/img1.jpeg',
-                'assets/img2.jpeg',
-                'assets/img3.jpeg',
-                'assets/img4.jpeg',
-              ].map((item) {
+              items: imgList.map((item) {
                 return Container(
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: Center(
-                    child: Image.asset(item, fit: BoxFit.cover, width: 1000 ,height: 250),
+                    child: Image.asset(
+                      item,
+                      fit: BoxFit.cover,
+                      width: 1200,
+                    ),
                   ),
                 );
               }).toList(),
             ),
           ),
-          const Divider(color: Color(0xff137547)),
+
+          const Divider(color: Colors.grey),
+
+          // Services Section
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'What is our aim:',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                const Text(
+                  'Our Services:',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 SizedBox(
-                  height: 150, // Adjust card height
+                  height: 150,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: services.length,
                     itemBuilder: (context, index) {
-                      return serviceCard(services[index]);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(color: Color(0xff137547)),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'What Services We Provide:',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  height: 150, // Adjust card height
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: services.length,
-                    itemBuilder: (context, index) {
-                      return serviceCard(services[index]);
+                      return serviceCard(services[index], serviceIcons[index]);
                     },
                   ),
                 ),
@@ -209,29 +242,34 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget serviceCard(String text) {
+  Widget serviceCard(String text, IconData icon) {
     return Container(
-      width: 200, // Adjust card width
+      width: 200,
       margin: const EdgeInsets.only(right: 16.0),
       decoration: BoxDecoration(
-        color: Color(0xffe6f5ec),
+        color: const Color(0xffe6f5ec),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.shade300,
             blurRadius: 5,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.black),
-          ),
+        child: Row(
+          children: [
+            Icon(icon, size: 24, color: Colors.green),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+            ),
+          ],
         ),
       ),
     );

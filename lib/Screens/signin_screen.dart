@@ -131,7 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextField(
                         controller: _emailController,
                         decoration: InputDecoration(
-                          labelText: 'Email',
+                          hintText: 'Email',
                           labelStyle: TextStyle(color: Colors.black),
                           filled: true,
                           fillColor: Colors.white,
@@ -152,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextField(
                         controller: _passwordController,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          hintText: 'Password',
                           labelStyle: TextStyle(color: Colors.black),
                           filled: true,
                           fillColor: Colors.white,
@@ -173,11 +173,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       SizedBox(height: 24),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(120, 50),
+                          minimumSize: Size(double.infinity, 50),
                           backgroundColor: Colors.green,
                           foregroundColor: const Color.fromRGBO(223, 240, 227, 1),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         onPressed: _signInWithEmailAndPassword,

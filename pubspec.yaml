@@ -52,10 +52,10 @@ flutter:
   assets:
     - assets/plants.tflite
     - assets/google_sign_in.png
-    - assets/img1.jpeg
-    - assets/img2.jpeg
-    - assets/img3.jpeg
-    - assets/img4.jpeg
+    - assets/2.png
+    - assets/3.png
+    - assets/4.png
+    - assets/5.png
     - assets/image1.jpg
     - assets/image2.jpg
     - assets/image3.jpg
@@ -70,3 +70,6 @@ flutter:
     - family: SourceSans3
       fonts:
         - asset: font/SourceSans3-VariableFont_wght.ttf
+    - family: Roboto_1
+      fonts:
+        - asset : font/PlaywriteVN-Regular.ttf
