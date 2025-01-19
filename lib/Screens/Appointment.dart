@@ -104,6 +104,7 @@ class AppointmentPage extends StatelessWidget {
                         ),
                         SizedBox(height: 8),  // Added spacing
                         TextButton(
+                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff137547))),
                           onPressed: () => _showAppointmentDetails(
                             context,
                             data['crop'],
@@ -111,7 +112,7 @@ class AppointmentPage extends StatelessWidget {
                           ),
                           child: Text(
                             'View Details',
-                            style: TextStyle(color: Color(0xff137547)),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ],

@@ -162,6 +162,7 @@ class HomePage extends StatelessWidget {
                   children: const [
                     SizedBox(height: 40),
                     Text("Hi,", style: TextStyle(fontSize: 50)),
+                    SizedBox(height: 10,),
                     Text("Farmer", style: TextStyle(fontSize: 50)),
                   ],
                 ),
@@ -258,11 +259,12 @@ class HomePage extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
+        padding: const EdgeInsets.symmetric(vertical: 36.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 24, color: Colors.green),
-            const SizedBox(width: 8),
+            Icon(icon, size: 50, color: Colors.green),
+            const SizedBox(height: 8),
             Expanded(
               child: Text(
                 text,
