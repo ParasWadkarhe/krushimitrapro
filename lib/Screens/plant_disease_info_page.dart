@@ -153,7 +153,7 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
       _cropNameController.clear();
     } catch (e) {
@@ -185,13 +185,13 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   _summary,
-                  style: const TextStyle(fontSize: 16, color: Colors.green),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
                 ),
               ],
               if (_schedule.isNotEmpty) ...[
@@ -201,14 +201,14 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 10),
                 ..._schedule.map(
                       (s) => Text(
                     '- $s',
-                    style: const TextStyle(fontSize: 16, color: Colors.green),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ),
               ],
@@ -253,13 +253,13 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.green,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               _diseaseName,
-              style: const TextStyle(fontSize: 16, color: Colors.green),
+              style: const TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -267,9 +267,9 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Crop Name',
-                labelStyle: TextStyle(color: Colors.green),
+                labelStyle: TextStyle(color: Colors.black),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: BorderSide(color: Colors.black),
                 ),
               ),
             ),
@@ -280,13 +280,13 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 _nextAppointment!.toLocal().toString().split(' ')[0],
-                style: const TextStyle(fontSize: 16, color: Colors.green),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
               ),
             ],
             const SizedBox(height: 20),
@@ -319,14 +319,14 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.green,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 10),
             ...items.map(
                   (item) => Text(
                 '- $item',
-                style: const TextStyle(fontSize: 16, color: Colors.green),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
               ),
             ),
           ],
@@ -336,31 +336,35 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
   }
 
   Widget _buildDiseaseNameCard() {
-    return Card(
-      elevation: 5,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'Disease Name:',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+    return Container(
+      width: double.infinity,
+      child: Card(
+        elevation: 5,
+        // margin: const EdgeInsets.symmetric(vertical: 8.0),
+
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                'Disease Name:',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              _diseaseName,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.green,
+              const SizedBox(height: 10),
+              Text(
+                _diseaseName,
+                style: const TextStyle(
+                  fontSize: 30,
+                  color:Colors.black,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -370,69 +374,83 @@ class _DiseaseInfoPageState extends State<DiseaseInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(223, 240, 227, 1),
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(223, 240, 227, 1),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.green),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text('Disease Information',
-            style: TextStyle(color: Colors.green)
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: const Color.fromRGBO(223, 240, 227, 1),
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back, color: Colors.green),
+      //     onPressed: () => Navigator.of(context).pop(),
+      //   ),
+      //   title: const Text('Disease Information',
+      //       style: TextStyle(color: Colors.green)
+      //   ),
+      // ),
       floatingActionButton: ElevatedButton(
-        onPressed: _toggleView,
+        onPressed: () {
+          if (_currentView == 2) {
+            // If on appointment page, navigate to home
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+                  (route) => false,
+            );
+          } else {
+            // Otherwise, toggle view as before
+            _toggleView();
+          }
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.green,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
-        child: const Text('Next'),
+        child: Text(_currentView == 2 ? 'Skip' : 'Next'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildDiseaseNameCard(),
-            if (_currentView == 0)
-              _buildGeminiResponseCard()
-            else if (_currentView == 1)
-              FutureBuilder<DocumentSnapshot>(
-                future: FirebaseFirestore.instance
-                    .collection('plant_disease_db')
-                    .doc('${widget.diseaseIndex}')
-                    .get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const Center(child: Text('No information available'));
-                  }
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildDiseaseNameCard(),
+              if (_currentView == 0)
+                _buildGeminiResponseCard()
+              else if (_currentView == 1)
+                FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('plant_disease_db')
+                      .doc('${widget.diseaseIndex}')
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    if (!snapshot.hasData || !snapshot.data!.exists) {
+                      return const Center(child: Text('No information available'));
+                    }
 
-                  var data = snapshot.data!.data() as Map<String, dynamic>;
-                  List<String> symptoms = List<String>.from(data['symptoms'] ?? []);
-                  List<String> precautions = List<String>.from(data['precautions'] ?? []);
-                  List<String> treatment = List<String>.from(data['treatment'] ?? []);
+                    var data = snapshot.data!.data() as Map<String, dynamic>;
+                    List<String> symptoms = List<String>.from(data['symptoms'] ?? []);
+                    List<String> precautions = List<String>.from(data['precautions'] ?? []);
+                    List<String> treatment = List<String>.from(data['treatment'] ?? []);
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _buildInfoCard('Symptoms', symptoms),
-                      _buildInfoCard('Precautions', precautions),
-                      _buildInfoCard('Treatment', treatment),
-                    ],
-                  );
-                },
-              )
-            else
-              _buildAppointmentForm(),
-          ],
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildInfoCard('Symptoms', symptoms),
+                        _buildInfoCard('Precautions', precautions),
+                        _buildInfoCard('Treatment', treatment),
+                      ],
+                    );
+                  },
+                )
+              else
+                _buildAppointmentForm(),
+            ],
+          ),
         ),
       ),
     );

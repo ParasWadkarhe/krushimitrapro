@@ -4,6 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:krushimitra/Screens/Welcome.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Appointment.dart';
 import 'Myth_Screen.dart';
 import 'news_page.dart';
@@ -16,11 +17,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-
-
   final _pageController = PageController(initialPage: 0);
   final NotchBottomBarController _controller =
-  NotchBottomBarController(index: 0);
+      NotchBottomBarController(index: 0);
 
   @override
   void dispose() {
@@ -162,7 +161,9 @@ class HomePage extends StatelessWidget {
                   children: const [
                     SizedBox(height: 40),
                     Text("Hi,", style: TextStyle(fontSize: 50)),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Text("Farmer", style: TextStyle(fontSize: 50)),
                   ],
                 ),
@@ -212,7 +213,10 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
-          const Divider(color: Colors.grey),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: const Divider(color: Colors.grey),
+          ),
 
           // Services Section
           Padding(
@@ -235,6 +239,32 @@ class HomePage extends StatelessWidget {
                     },
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: const Divider(color: Colors.grey),
+                ),
+                const Text(
+                  'Visit our website for more statistics :',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: double.infinity,
+                  child: TextButton(
+                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff137547))),
+                      onPressed: () {
+                        launchUrl(Uri.parse('https://krushimitra-six.vercel.app/'));
+                      },
+                      child: Text(
+                        "Krushi-Mitra.org",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      )),
+                )
               ],
             ),
           ),
@@ -263,7 +293,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 50, color: Colors.green),
+            Icon(icon, size: 50, color: Color(0xff137547)),
             const SizedBox(height: 8),
             Expanded(
               child: Text(
