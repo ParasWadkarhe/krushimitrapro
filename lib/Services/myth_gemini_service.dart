@@ -7,7 +7,7 @@ class MythGeminiService {
   Future<String> interpretMyth(String mythTitle) async {
     // API Key for Google Generative AI
     
-    const apiKey = "GEMINI_API_KEY";
+    const apiKey = GEMINI_API_KEY;
 
     if (apiKey.isEmpty) {
       return 'API Key is missing';
