@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http; // For HTTP requests
 import 'dart:convert'; // For JSON decoding
 
 class NewsService {
-  final String apiKey = '6b246d6cd03e4acab4da3d0b6076dd8f';
+  final String apiKey = NEWS_API_KEY;
 
   Future<List<NewsArticle>> fetchAgricultureNews(String country) async {
     final String url = country == 'global'
