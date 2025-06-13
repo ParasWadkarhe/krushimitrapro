@@ -15,7 +15,7 @@ class MythApiService {
 
     try {
       // Replace with a valid mythology API endpoint
-      final url = 'https://newsapi.org/v2/everything?q=$query&apiKey=6b246d6cd03e4acab4da3d0b6076dd8f';
+      final url = 'https://newsapi.org/v2/everything?q=$query&apiKey=NEWS_API_KEY';
       final response = await http.get(Uri.parse(url));
       print(url);
       if (response.statusCode == 200) {
